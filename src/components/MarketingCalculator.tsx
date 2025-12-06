@@ -1,7 +1,9 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart, Zap } from "lucide-react";
+import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart, Zap, Download, Loader2 } from "lucide-react";
 import SliderField from "./SliderField";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const MarketingCalculator = () => {
   const [investimento, setInvestimento] = useState(5000);
@@ -44,7 +46,9 @@ const MarketingCalculator = () => {
 
   // Animation key for funnel
   const [animationKey, setAnimationKey] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
   const prevCalculos = useRef(calculos);
+  const reportRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (
@@ -57,6 +61,44 @@ const MarketingCalculator = () => {
       prevCalculos.current = calculos;
     }
   }, [calculos]);
+
+  const exportToPDF = async () => {
+    if (!reportRef.current) return;
+    
+    setIsExporting(true);
+    try {
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#0f1419',
+        logging: false,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 5;
+      
+      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+      
+      const date = new Date().toLocaleDateString('pt-BR');
+      pdf.save(`relatorio-marketing-roi-${date}.pdf`);
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const formatCurrency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
@@ -95,16 +137,26 @@ const MarketingCalculator = () => {
               <p className="text-xs text-muted-foreground">Calculadora de Viabilidade</p>
             </div>
           </div>
-          <div className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
-            isViable ? 'bg-success/20 text-success border border-success/30' : 'bg-destructive/20 text-destructive border border-destructive/30'
-          }`}>
-            {isViable ? <CheckCircle className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-            {isViable ? 'Viável' : 'Inviável'}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={exportToPDF}
+              disabled={isExporting}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-medium hover:bg-primary/20 transition-all disabled:opacity-50"
+            >
+              {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              {isExporting ? 'Exportando...' : 'Exportar PDF'}
+            </button>
+            <div className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+              isViable ? 'bg-success/20 text-success border border-success/30' : 'bg-destructive/20 text-destructive border border-destructive/30'
+            }`}>
+              {isViable ? <CheckCircle className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
+              {isViable ? 'Viável' : 'Inviável'}
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div ref={reportRef} className="max-w-7xl mx-auto px-4 py-6">
         {/* Dashboard Top Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {/* KPI Cards */}
