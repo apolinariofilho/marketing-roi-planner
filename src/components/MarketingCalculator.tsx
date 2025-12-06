@@ -129,16 +129,7 @@ const MarketingCalculator = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-              <Zap className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-lg font-display font-bold gradient-text">Marketing ROI</h1>
-              <p className="text-xs text-muted-foreground">Calculadora de Viabilidade</p>
-            </div>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-end">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
