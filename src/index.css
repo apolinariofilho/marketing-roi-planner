@@ -48,6 +48,19 @@
 
     --shadow-glow: 0 0 40px hsl(168 76% 42% / 0.15);
     --shadow-card: 0 4px 24px hsl(220 20% 4% / 0.5);
+
+    /* Funnel colors - bright and vibrant */
+    --funnel-1: 210 100% 60%;
+    --funnel-2: 168 80% 50%;
+    --funnel-3: 45 95% 55%;
+    --funnel-4: 142 80% 45%;
+
+    /* Chart colors - brighter */
+    --chart-1: 210 100% 60%;
+    --chart-2: 168 80% 50%;
+    --chart-3: 45 95% 55%;
+    --chart-4: 142 80% 45%;
+    --chart-5: 280 80% 60%;
   }
 }
 
@@ -83,5 +96,40 @@
 
   .input-glow:focus {
     box-shadow: 0 0 0 2px hsl(var(--primary) / 0.3);
+  }
+
+  /* Funnel animation */
+  @keyframes funnel-fill {
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes funnel-pulse {
+    0%, 100% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(1.15);
+    }
+  }
+
+  .funnel-step {
+    animation: funnel-fill 0.5s ease-out forwards;
+    transform-origin: top center;
+  }
+
+  .funnel-step:nth-child(1) { animation-delay: 0ms; }
+  .funnel-step:nth-child(2) { animation-delay: 100ms; }
+  .funnel-step:nth-child(3) { animation-delay: 200ms; }
+  .funnel-step:nth-child(4) { animation-delay: 300ms; }
+
+  .funnel-animate {
+    animation: funnel-pulse 0.6s ease-in-out;
   }
 }

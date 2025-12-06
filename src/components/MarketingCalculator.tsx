@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart, Zap } from "lucide-react";
 import SliderField from "./SliderField";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
@@ -42,11 +42,27 @@ const MarketingCalculator = () => {
     };
   }, [investimento, custoLead, taxaAgendamento, taxaComparecimento, taxaFechamento, custoEquipe, valorProduto, margemLucro, taxaImposto]);
 
+  // Animation key for funnel
+  const [animationKey, setAnimationKey] = useState(0);
+  const prevCalculos = useRef(calculos);
+  
+  useEffect(() => {
+    if (
+      prevCalculos.current.leads !== calculos.leads ||
+      prevCalculos.current.agendados !== calculos.agendados ||
+      prevCalculos.current.comparecidos !== calculos.comparecidos ||
+      prevCalculos.current.fechados !== calculos.fechados
+    ) {
+      setAnimationKey(prev => prev + 1);
+      prevCalculos.current = calculos;
+    }
+  }, [calculos]);
+
   const formatCurrency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
-  // Chart data
+  // Chart data with brighter colors
   const funnelData = [
-    { name: 'Leads', value: Math.round(calculos.leads), fill: 'hsl(var(--primary))' },
+    { name: 'Leads', value: Math.round(calculos.leads), fill: 'hsl(var(--chart-1))' },
     { name: 'Agendados', value: Math.round(calculos.agendados), fill: 'hsl(var(--chart-2))' },
     { name: 'Compareceram', value: Math.round(calculos.comparecidos), fill: 'hsl(var(--chart-3))' },
     { name: 'Fechados', value: Math.round(calculos.fechados), fill: 'hsl(var(--chart-4))' },
@@ -123,97 +139,101 @@ const MarketingCalculator = () => {
           <h3 className="text-sm font-bold uppercase tracking-wide text-foreground mb-6 flex items-center gap-2">
             🎯 Funil de Conversão
           </h3>
-          <div className="flex flex-col items-center gap-1">
+          <div key={animationKey} className="flex flex-col items-center gap-1">
             {/* Leads */}
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full max-w-md funnel-step">
               <div 
-                className="h-16 flex items-center justify-center rounded-t-xl transition-all"
+                className="h-16 flex items-center justify-center rounded-t-xl transition-all shadow-lg funnel-animate"
                 style={{ 
-                  background: 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.8))',
-                  clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)'
+                  background: 'linear-gradient(135deg, hsl(210 100% 60%), hsl(210 100% 50%))',
+                  clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)',
+                  boxShadow: '0 4px 20px hsl(210 100% 60% / 0.4)'
                 }}
               >
-                <div className="text-center text-white">
-                  <p className="text-2xl font-bold">{Math.round(calculos.leads)}</p>
-                  <p className="text-xs opacity-90">Leads</p>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{Math.round(calculos.leads)}</p>
+                  <p className="text-sm font-semibold text-white/90">Leads</p>
                 </div>
               </div>
-              <div className="absolute -right-24 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hidden md:block">
+              <div className="absolute -right-24 top-1/2 -translate-y-1/2 text-xs font-medium text-foreground/80 hidden md:block">
                 100% dos leads
               </div>
             </div>
 
             {/* Arrow */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground py-1">
-              <span className="font-semibold text-chart-2">{taxaAgendamento}%</span>
-              <span>agendam</span>
+            <div className="flex items-center gap-2 text-sm font-bold py-1">
+              <span className="text-[hsl(168_80%_50%)]">{taxaAgendamento}%</span>
+              <span className="text-foreground/70">agendam</span>
             </div>
 
             {/* Agendados */}
-            <div className="relative w-[90%] max-w-[calc(28rem*0.9)]">
+            <div className="relative w-[90%] max-w-[calc(28rem*0.9)] funnel-step">
               <div 
-                className="h-16 flex items-center justify-center transition-all"
+                className="h-16 flex items-center justify-center transition-all shadow-lg funnel-animate"
                 style={{ 
-                  background: 'linear-gradient(135deg, hsl(var(--chart-2)), hsl(var(--chart-2)/0.8))',
-                  clipPath: 'polygon(5% 0, 95% 0, 90% 100%, 10% 100%)'
+                  background: 'linear-gradient(135deg, hsl(168 80% 50%), hsl(168 80% 40%))',
+                  clipPath: 'polygon(5% 0, 95% 0, 90% 100%, 10% 100%)',
+                  boxShadow: '0 4px 20px hsl(168 80% 50% / 0.4)'
                 }}
               >
-                <div className="text-center text-white">
-                  <p className="text-2xl font-bold">{Math.round(calculos.agendados)}</p>
-                  <p className="text-xs opacity-90">Agendados</p>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{Math.round(calculos.agendados)}</p>
+                  <p className="text-sm font-semibold text-white/90">Agendados</p>
                 </div>
               </div>
-              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hidden md:block">
+              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs font-medium text-foreground/80 hidden md:block">
                 {((calculos.agendados / calculos.leads) * 100 || 0).toFixed(0)}% do total
               </div>
             </div>
 
             {/* Arrow */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground py-1">
-              <span className="font-semibold text-chart-3">{taxaComparecimento}%</span>
-              <span>comparecem</span>
+            <div className="flex items-center gap-2 text-sm font-bold py-1">
+              <span className="text-[hsl(45_95%_55%)]">{taxaComparecimento}%</span>
+              <span className="text-foreground/70">comparecem</span>
             </div>
 
             {/* Compareceram */}
-            <div className="relative w-[75%] max-w-[calc(28rem*0.75)]">
+            <div className="relative w-[75%] max-w-[calc(28rem*0.75)] funnel-step">
               <div 
-                className="h-16 flex items-center justify-center transition-all"
+                className="h-16 flex items-center justify-center transition-all shadow-lg funnel-animate"
                 style={{ 
-                  background: 'linear-gradient(135deg, hsl(var(--chart-3)), hsl(var(--chart-3)/0.8))',
-                  clipPath: 'polygon(10% 0, 90% 0, 85% 100%, 15% 100%)'
+                  background: 'linear-gradient(135deg, hsl(45 95% 55%), hsl(45 95% 45%))',
+                  clipPath: 'polygon(10% 0, 90% 0, 85% 100%, 15% 100%)',
+                  boxShadow: '0 4px 20px hsl(45 95% 55% / 0.4)'
                 }}
               >
-                <div className="text-center text-white">
-                  <p className="text-2xl font-bold">{Math.round(calculos.comparecidos)}</p>
-                  <p className="text-xs opacity-90">Compareceram</p>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-900 drop-shadow-lg">{Math.round(calculos.comparecidos)}</p>
+                  <p className="text-sm font-semibold text-gray-900/80">Compareceram</p>
                 </div>
               </div>
-              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hidden md:block">
+              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs font-medium text-foreground/80 hidden md:block">
                 {((calculos.comparecidos / calculos.leads) * 100 || 0).toFixed(0)}% do total
               </div>
             </div>
 
             {/* Arrow */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground py-1">
-              <span className="font-semibold text-chart-4">{taxaFechamento}%</span>
-              <span>fecham</span>
+            <div className="flex items-center gap-2 text-sm font-bold py-1">
+              <span className="text-[hsl(142_80%_45%)]">{taxaFechamento}%</span>
+              <span className="text-foreground/70">fecham</span>
             </div>
 
             {/* Fechados */}
-            <div className="relative w-[55%] max-w-[calc(28rem*0.55)]">
+            <div className="relative w-[55%] max-w-[calc(28rem*0.55)] funnel-step">
               <div 
-                className="h-16 flex items-center justify-center rounded-b-xl transition-all"
+                className="h-16 flex items-center justify-center rounded-b-xl transition-all shadow-lg funnel-animate"
                 style={{ 
-                  background: 'linear-gradient(135deg, hsl(var(--chart-4)), hsl(var(--chart-4)/0.8))',
-                  clipPath: 'polygon(15% 0, 85% 0, 75% 100%, 25% 100%)'
+                  background: 'linear-gradient(135deg, hsl(142 80% 45%), hsl(142 80% 35%))',
+                  clipPath: 'polygon(15% 0, 85% 0, 75% 100%, 25% 100%)',
+                  boxShadow: '0 4px 20px hsl(142 80% 45% / 0.4)'
                 }}
               >
-                <div className="text-center text-white">
-                  <p className="text-2xl font-bold">{Math.round(calculos.fechados)}</p>
-                  <p className="text-xs opacity-90">Vendas</p>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{Math.round(calculos.fechados)}</p>
+                  <p className="text-sm font-semibold text-white/90">Vendas</p>
                 </div>
               </div>
-              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hidden md:block">
+              <div className="absolute -right-28 top-1/2 -translate-y-1/2 text-xs font-medium text-foreground/80 hidden md:block">
                 {((calculos.fechados / calculos.leads) * 100 || 0).toFixed(1)}% do total
               </div>
             </div>
@@ -221,21 +241,21 @@ const MarketingCalculator = () => {
 
           {/* Summary */}
           <div className="mt-6 grid grid-cols-4 gap-3 text-center">
-            <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
-              <p className="text-lg font-bold text-primary">{Math.round(calculos.leads)}</p>
-              <p className="text-xs text-muted-foreground">Leads</p>
+            <div className="p-3 rounded-lg border-2" style={{ background: 'hsl(210 100% 60% / 0.15)', borderColor: 'hsl(210 100% 60% / 0.5)' }}>
+              <p className="text-xl font-bold" style={{ color: 'hsl(210 100% 70%)' }}>{Math.round(calculos.leads)}</p>
+              <p className="text-xs font-medium text-foreground/80">Leads</p>
             </div>
-            <div className="p-3 rounded-lg bg-chart-2/10 border border-chart-2/20">
-              <p className="text-lg font-bold text-chart-2">{Math.round(calculos.agendados)}</p>
-              <p className="text-xs text-muted-foreground">Agendados</p>
+            <div className="p-3 rounded-lg border-2" style={{ background: 'hsl(168 80% 50% / 0.15)', borderColor: 'hsl(168 80% 50% / 0.5)' }}>
+              <p className="text-xl font-bold" style={{ color: 'hsl(168 80% 60%)' }}>{Math.round(calculos.agendados)}</p>
+              <p className="text-xs font-medium text-foreground/80">Agendados</p>
             </div>
-            <div className="p-3 rounded-lg bg-chart-3/10 border border-chart-3/20">
-              <p className="text-lg font-bold text-chart-3">{Math.round(calculos.comparecidos)}</p>
-              <p className="text-xs text-muted-foreground">Compareceram</p>
+            <div className="p-3 rounded-lg border-2" style={{ background: 'hsl(45 95% 55% / 0.15)', borderColor: 'hsl(45 95% 55% / 0.5)' }}>
+              <p className="text-xl font-bold" style={{ color: 'hsl(45 95% 60%)' }}>{Math.round(calculos.comparecidos)}</p>
+              <p className="text-xs font-medium text-foreground/80">Compareceram</p>
             </div>
-            <div className="p-3 rounded-lg bg-chart-4/10 border border-chart-4/20">
-              <p className="text-lg font-bold text-chart-4">{Math.round(calculos.fechados)}</p>
-              <p className="text-xs text-muted-foreground">Vendas</p>
+            <div className="p-3 rounded-lg border-2" style={{ background: 'hsl(142 80% 45% / 0.15)', borderColor: 'hsl(142 80% 45% / 0.5)' }}>
+              <p className="text-xl font-bold" style={{ color: 'hsl(142 80% 55%)' }}>{Math.round(calculos.fechados)}</p>
+              <p className="text-xs font-medium text-foreground/80">Vendas</p>
             </div>
           </div>
         </div>
