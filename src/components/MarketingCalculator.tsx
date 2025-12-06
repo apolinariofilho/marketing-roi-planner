@@ -176,14 +176,14 @@ const MarketingCalculator = () => {
               {calculos.roi.toFixed(1)}%
             </p>
           </div>
-          <div className="glass-card p-4 border-l-4 border-l-chart-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Faturamento Bruto</p>
-            <p className="text-2xl font-bold tabular-nums text-foreground">
+          <div className="glass-card p-4 border-l-4 border-l-chart-1 bg-chart-1/5">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">📊 Faturamento Bruto</p>
+            <p className="text-2xl font-bold tabular-nums text-[hsl(var(--chart-1))]">
               {formatCurrency(calculos.receitaTotal)}
             </p>
           </div>
-          <div className={`glass-card p-4 border-l-4 ${calculos.resultadoFinal >= 0 ? 'border-l-success bg-success/5' : 'border-l-destructive bg-destructive/5'}`}>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">💰 Sobra p/ Empresário</p>
+          <div className={`glass-card p-4 border-l-4 ${calculos.resultadoFinal >= 0 ? 'border-l-success bg-success/10' : 'border-l-destructive bg-destructive/10'}`}>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">💰 Lucro Líquido</p>
             <p className={`text-2xl font-bold tabular-nums ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>
               {formatCurrency(calculos.resultadoFinal)}
             </p>
