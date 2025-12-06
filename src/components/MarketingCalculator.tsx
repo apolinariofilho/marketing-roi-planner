@@ -294,27 +294,94 @@ const MarketingCalculator = () => {
           </div>
         </div>
 
-        {/* Bottom Result Banner */}
-        <div className={`mt-6 glass-card p-5 flex items-center justify-between ${isViable ? 'border-success/30 bg-success/5' : 'border-destructive/30 bg-destructive/5'}`}>
-          <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${isViable ? 'bg-success/20' : 'bg-destructive/20'}`}>
-              {isViable ? <CheckCircle className="w-6 h-6 text-success" /> : <AlertTriangle className="w-6 h-6 text-destructive" />}
+        {/* Extrato Financeiro */}
+        <div className="mt-6 glass-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wide text-foreground mb-6 flex items-center gap-2">
+            📋 Extrato Financeiro
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* O que você vai pagar */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold text-destructive uppercase tracking-wide border-b border-destructive/30 pb-2">
+                💸 O que você vai pagar
+              </h4>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Investimento em anúncios</span>
+                  <span className="text-sm font-semibold text-foreground">{formatCurrency(investimento)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Taxa da plataforma (13%)</span>
+                  <span className="text-sm font-semibold text-destructive">{formatCurrency(investimento * 0.13)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Custo da equipe de marketing</span>
+                  <span className="text-sm font-semibold text-foreground">{formatCurrency(custoEquipe)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Imposto sobre vendas ({taxaImposto}% × {Math.floor(calculos.fechados)} vendas)</span>
+                  <span className="text-sm font-semibold text-destructive">{formatCurrency(calculos.impostoUnitario * Math.floor(calculos.fechados))}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 bg-destructive/10 rounded-lg px-3 mt-2">
+                  <span className="text-sm font-bold text-destructive">TOTAL A PAGAR</span>
+                  <span className="text-lg font-bold text-destructive">{formatCurrency(calculos.custoTotal + (calculos.impostoUnitario * Math.floor(calculos.fechados)))}</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-foreground">
-                {isViable ? "Investimento Viável!" : "Investimento Inviável"}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {isViable 
-                  ? `${Math.floor(calculos.fechados)} vendas previstas geram ${formatCurrency(calculos.resultadoFinal)} de lucro`
-                  : `Precisa de ${calculos.produtosBreakEven - Math.floor(calculos.fechados)} vendas adicionais para break-even`
-                }
-              </p>
+
+            {/* O que você vai receber */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold text-success uppercase tracking-wide border-b border-success/30 pb-2">
+                💰 O que você vai receber
+              </h4>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Quantidade de vendas previstas</span>
+                  <span className="text-sm font-semibold text-foreground">{Math.floor(calculos.fechados)} vendas</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Valor por venda</span>
+                  <span className="text-sm font-semibold text-foreground">{formatCurrency(valorProduto)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Faturamento total</span>
+                  <span className="text-sm font-semibold text-success">{formatCurrency(calculos.receitaTotal)}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Lucro líquido por venda</span>
+                  <span className="text-sm font-semibold text-foreground">{formatCurrency(calculos.lucroUnitario)}</span>
+                </div>
+                <div className={`flex justify-between items-center py-3 rounded-lg px-3 mt-2 ${calculos.resultadoFinal >= 0 ? 'bg-success/10' : 'bg-destructive/10'}`}>
+                  <span className={`text-sm font-bold ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>LUCRO FINAL</span>
+                  <span className={`text-lg font-bold ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(calculos.resultadoFinal)}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="text-right hidden md:block">
-            <p className="text-xs text-muted-foreground">Custo Total</p>
-            <p className="text-xl font-bold text-foreground">{formatCurrency(calculos.custoTotal)}</p>
+
+          {/* Resumo Final */}
+          <div className={`mt-6 p-4 rounded-xl border-2 ${isViable ? 'border-success bg-success/5' : 'border-destructive bg-destructive/5'}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {isViable ? <CheckCircle className="w-6 h-6 text-success" /> : <AlertTriangle className="w-6 h-6 text-destructive" />}
+                <div>
+                  <p className="font-bold text-foreground">
+                    {isViable ? "✅ Investimento Viável" : "❌ Investimento Inviável"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {isViable 
+                      ? `Você precisa de ${calculos.produtosBreakEven} vendas para empatar. Projeção: ${Math.floor(calculos.fechados)} vendas.`
+                      : `Faltam ${calculos.produtosBreakEven - Math.floor(calculos.fechados)} vendas para empatar.`
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">ROI</p>
+                <p className={`text-2xl font-bold ${calculos.roi >= 0 ? 'text-success' : 'text-destructive'}`}>{calculos.roi.toFixed(1)}%</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
