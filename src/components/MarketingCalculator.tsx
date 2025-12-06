@@ -171,25 +171,25 @@ const MarketingCalculator = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           {/* Row 1 - Main KPIs */}
           <div className="glass-card p-4 border-l-4 border-l-chart-1 bg-chart-1/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">📊 Faturamento Bruto</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Faturamento Bruto</p>
             <p className="text-2xl font-bold tabular-nums text-[hsl(var(--chart-1))]">
               {formatCurrency(calculos.receitaTotal)}
             </p>
           </div>
           <div className={`glass-card p-4 border-l-4 ${calculos.resultadoFinal >= 0 ? 'border-l-success bg-success/10' : 'border-l-destructive bg-destructive/10'}`}>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">💰 Lucro Líquido</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Lucro Líquido</p>
             <p className={`text-2xl font-bold tabular-nums ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>
               {formatCurrency(calculos.resultadoFinal)}
             </p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-primary">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">📈 ROI</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">ROI</p>
             <p className={`text-2xl font-bold tabular-nums ${calculos.roi >= 0 ? 'text-success' : 'text-destructive'}`}>
               {calculos.roi.toFixed(1)}%
             </p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-chart-4">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">🎯 Vendas Previstas</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Vendas Previstas</p>
             <p className="text-2xl font-bold tabular-nums text-foreground">
               {Math.floor(calculos.fechados)} <span className="text-sm font-normal text-muted-foreground">vendas</span>
             </p>
@@ -199,33 +199,33 @@ const MarketingCalculator = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           {/* Row 2 - Cost Details */}
           <div className="glass-card p-4 border-l-4 border-l-destructive/70 bg-destructive/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">💸 Investimento Ads</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Investimento Ads</p>
             <p className="text-xl font-bold tabular-nums text-destructive">
               {formatCurrency(investimento)}
             </p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-warning bg-warning/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">📱 Taxa Plataforma</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Taxa Plataforma</p>
             <p className="text-xl font-bold tabular-nums text-warning">
               {formatCurrency(investimento * 0.13)}
             </p>
             <p className="text-[10px] text-muted-foreground">13% do investimento</p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-chart-2 bg-chart-2/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">👥 Equipe Marketing</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Equipe Marketing</p>
             <p className="text-xl font-bold tabular-nums text-[hsl(var(--chart-2))]">
               {formatCurrency(custoEquipe)}
             </p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-destructive bg-destructive/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">🏛️ Impostos</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Impostos</p>
             <p className="text-xl font-bold tabular-nums text-destructive">
               {formatCurrency(calculos.impostoUnitario * Math.floor(calculos.fechados))}
             </p>
             <p className="text-[10px] text-muted-foreground">{taxaImposto}% × {Math.floor(calculos.fechados)} vendas</p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-chart-3 bg-chart-3/5">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">⚖️ Break-Even</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Break-Even</p>
             <p className="text-xl font-bold tabular-nums text-[hsl(var(--chart-3))]">
               {calculos.produtosBreakEven} <span className="text-xs font-normal text-muted-foreground">vendas</span>
             </p>
