@@ -133,7 +133,7 @@ const MarketingCalculator = () => {
                   clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)'
                 }}
               >
-                <div className="text-center text-primary-foreground">
+                <div className="text-center text-white">
                   <p className="text-2xl font-bold">{Math.round(calculos.leads)}</p>
                   <p className="text-xs opacity-90">Leads</p>
                 </div>
@@ -158,7 +158,7 @@ const MarketingCalculator = () => {
                   clipPath: 'polygon(5% 0, 95% 0, 90% 100%, 10% 100%)'
                 }}
               >
-                <div className="text-center text-primary-foreground">
+                <div className="text-center text-white">
                   <p className="text-2xl font-bold">{Math.round(calculos.agendados)}</p>
                   <p className="text-xs opacity-90">Agendados</p>
                 </div>
@@ -183,7 +183,7 @@ const MarketingCalculator = () => {
                   clipPath: 'polygon(10% 0, 90% 0, 85% 100%, 15% 100%)'
                 }}
               >
-                <div className="text-center text-primary-foreground">
+                <div className="text-center text-white">
                   <p className="text-2xl font-bold">{Math.round(calculos.comparecidos)}</p>
                   <p className="text-xs opacity-90">Compareceram</p>
                 </div>
@@ -208,7 +208,7 @@ const MarketingCalculator = () => {
                   clipPath: 'polygon(15% 0, 85% 0, 75% 100%, 25% 100%)'
                 }}
               >
-                <div className="text-center text-primary-foreground">
+                <div className="text-center text-white">
                   <p className="text-2xl font-bold">{Math.round(calculos.fechados)}</p>
                   <p className="text-xs opacity-90">Vendas</p>
                 </div>
