@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle } from "lucide-react";
+import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart } from "lucide-react";
 import InputField from "./InputField";
 import ResultCard from "./ResultCard";
 import FunnelStep from "./FunnelStep";
@@ -21,6 +21,10 @@ const MarketingCalculator = () => {
   const [nomeProduto, setNomeProduto] = useState("Produto/Serviço");
   const [valorProduto, setValorProduto] = useState(1500);
   const [margemLucro, setMargemLucro] = useState(40);
+  
+  // Tipo e Imposto
+  const [tipoOferta, setTipoOferta] = useState<"servico" | "produto">("servico");
+  const [taxaImposto, setTaxaImposto] = useState(7.5); // Default para serviço
 
   // Cálculos
   const calculos = useMemo(() => {
@@ -32,10 +36,15 @@ const MarketingCalculator = () => {
     const investimentoComTaxa = investimento * 1.13;
     const custoTotal = investimentoComTaxa + custoEquipe;
     
-    const lucroUnitario = valorProduto * (margemLucro / 100);
+    // Lucro unitário agora desconta o imposto
+    const valorAposImposto = valorProduto * (1 - taxaImposto / 100);
+    const lucroUnitario = valorAposImposto * (margemLucro / 100);
+    const impostoUnitario = valorProduto * (taxaImposto / 100);
+    
     const produtosBreakEven = lucroUnitario > 0 ? Math.ceil(custoTotal / lucroUnitario) : 0;
     
     const receitaTotal = fechados * valorProduto;
+    const impostoTotal = fechados * impostoUnitario;
     const lucroTotal = fechados * lucroUnitario;
     const resultadoFinal = lucroTotal - custoTotal;
     const roi = custoTotal > 0 ? ((lucroTotal - custoTotal) / custoTotal) * 100 : 0;
@@ -48,13 +57,15 @@ const MarketingCalculator = () => {
       investimentoComTaxa,
       custoTotal,
       lucroUnitario,
+      impostoUnitario,
       produtosBreakEven,
       receitaTotal,
+      impostoTotal,
       lucroTotal,
       resultadoFinal,
       roi,
     };
-  }, [investimento, custoLead, taxaAgendamento, taxaComparecimento, taxaFechamento, custoEquipe, valorProduto, margemLucro]);
+  }, [investimento, custoLead, taxaAgendamento, taxaComparecimento, taxaFechamento, custoEquipe, valorProduto, margemLucro, taxaImposto]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -182,6 +193,55 @@ const MarketingCalculator = () => {
               </div>
               
               <div className="space-y-4">
+                {/* Tipo de Oferta */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-muted-foreground">Tipo de Oferta</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        setTipoOferta("servico");
+                        setTaxaImposto(7.5);
+                      }}
+                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200 ${
+                        tipoOferta === "servico"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary/50 border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <Briefcase className="w-4 h-4" />
+                      <span className="font-medium text-sm">Serviço</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setTipoOferta("produto");
+                        setTaxaImposto(22.5);
+                      }}
+                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200 ${
+                        tipoOferta === "produto"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary/50 border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      <span className="font-medium text-sm">Produto</span>
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {tipoOferta === "servico" 
+                      ? "Serviços: imposto entre 6% e 9%" 
+                      : "Produtos: imposto entre 20% e 25%"}
+                  </p>
+                </div>
+                
+                {/* Taxa de Imposto */}
+                <InputField
+                  label="Taxa de Imposto"
+                  value={taxaImposto}
+                  onChange={setTaxaImposto}
+                  suffix="%"
+                  max={100}
+                />
+                
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-muted-foreground">Nome do Produto</label>
                   <input
@@ -238,9 +298,16 @@ const MarketingCalculator = () => {
             <h2 className="text-xl font-display font-bold">Análise de Break-Even</h2>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <ResultCard
-              label="Lucro por Produto"
+              label={`Imposto (${taxaImposto}%)`}
+              value={formatCurrency(calculos.impostoUnitario)}
+              icon={<Percent className="w-5 h-5" />}
+              variant="warning"
+              size="large"
+            />
+            <ResultCard
+              label="Lucro Líquido/Unidade"
               value={formatCurrency(calculos.lucroUnitario)}
               icon={<Package className="w-5 h-5" />}
               size="large"
