@@ -6,6 +6,64 @@
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 15%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 168 76% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 25%;
+
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 168 60% 30%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 20% 8%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 168 76% 36%;
+
+    --radius: 0.75rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(168 76% 36%), hsl(168 60% 28%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 14% 96%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(168 76% 36%));
+
+    --shadow-glow: 0 0 40px hsl(168 76% 36% / 0.12);
+    --shadow-card: 0 4px 24px hsl(220 20% 20% / 0.08);
+
+    /* Funnel colors */
+    --funnel-1: 210 100% 50%;
+    --funnel-2: 168 80% 40%;
+    --funnel-3: 45 95% 45%;
+    --funnel-4: 142 80% 40%;
+
+    /* Chart colors */
+    --chart-1: 210 100% 50%;
+    --chart-2: 168 80% 40%;
+    --chart-3: 45 95% 45%;
+    --chart-4: 142 80% 40%;
+    --chart-5: 280 80% 50%;
+  }
+
+  .dark {
     --background: 220 20% 8%;
     --foreground: 210 20% 95%;
 
@@ -39,8 +97,6 @@
     --border: 220 14% 20%;
     --input: 220 14% 20%;
     --ring: 168 76% 42%;
-
-    --radius: 0.75rem;
 
     --gradient-primary: linear-gradient(135deg, hsl(168 76% 42%), hsl(168 60% 30%));
     --gradient-card: linear-gradient(180deg, hsl(220 18% 14%), hsl(220 18% 10%));

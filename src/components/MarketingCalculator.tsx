@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart, Zap, Download, Loader2 } from "lucide-react";
+import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart, Zap, Download, Loader2, Moon, Sun } from "lucide-react";
 import SliderField from "./SliderField";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area } from "recharts";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useTheme } from "next-themes";
 
 const MarketingCalculator = () => {
   const [investimento, setInvestimento] = useState(5000);
@@ -16,6 +17,7 @@ const MarketingCalculator = () => {
   const [margemLucro, setMargemLucro] = useState(40);
   const [tipoOferta, setTipoOferta] = useState<"servico" | "produto">("servico");
   const [taxaImposto, setTaxaImposto] = useState(7.5);
+  const { theme, setTheme } = useTheme();
 
   const calculos = useMemo(() => {
     const leads = custoLead > 0 ? investimento / custoLead : 0;
@@ -70,7 +72,7 @@ const MarketingCalculator = () => {
       const canvas = await html2canvas(reportRef.current, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#0f1419',
+        backgroundColor: theme === 'dark' ? '#0f1419' : '#ffffff',
         logging: false,
       });
       
@@ -137,7 +139,15 @@ const MarketingCalculator = () => {
               <p className="text-xs text-muted-foreground">Calculadora de Viabilidade</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="relative p-2 rounded-lg bg-secondary/50 border border-border hover:bg-secondary transition-all"
+              aria-label="Alternar tema"
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-foreground" />
+              <Moon className="absolute top-2 left-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-foreground" />
+            </button>
             <button
               onClick={exportToPDF}
               disabled={isExporting}
@@ -472,61 +482,61 @@ const MarketingCalculator = () => {
             📋 Extrato Financeiro
           </h3>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             {/* O que você vai pagar */}
             <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-destructive uppercase tracking-wide border-b border-destructive/30 pb-2">
-                💸 O que você vai pagar
+              <h4 className="text-sm font-bold text-destructive uppercase tracking-wide border-b-2 border-destructive/40 pb-3 flex items-center gap-2">
+                💸 O QUE VOCÊ VAI PAGAR
               </h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Investimento em anúncios</span>
-                  <span className="text-sm font-semibold text-foreground">{formatCurrency(investimento)}</span>
+              <div className="space-y-1">
+                <div className="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-foreground">Investimento em anúncios</span>
+                  <span className="text-base font-bold text-foreground">{formatCurrency(investimento)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Taxa da plataforma (13%)</span>
-                  <span className="text-sm font-semibold text-destructive">{formatCurrency(investimento * 0.13)}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-destructive/5 rounded-lg border border-destructive/20">
+                  <span className="text-sm font-medium text-foreground">Taxa da plataforma (13%)</span>
+                  <span className="text-base font-bold text-destructive">{formatCurrency(investimento * 0.13)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Custo da equipe de marketing</span>
-                  <span className="text-sm font-semibold text-foreground">{formatCurrency(custoEquipe)}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-foreground">Custo da equipe de marketing</span>
+                  <span className="text-base font-bold text-foreground">{formatCurrency(custoEquipe)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Imposto sobre vendas ({taxaImposto}% × {Math.floor(calculos.fechados)} vendas)</span>
-                  <span className="text-sm font-semibold text-destructive">{formatCurrency(calculos.impostoUnitario * Math.floor(calculos.fechados))}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-destructive/5 rounded-lg border border-destructive/20">
+                  <span className="text-sm font-medium text-foreground">Imposto sobre vendas ({taxaImposto}% × {Math.floor(calculos.fechados)} vendas)</span>
+                  <span className="text-base font-bold text-destructive">{formatCurrency(calculos.impostoUnitario * Math.floor(calculos.fechados))}</span>
                 </div>
-                <div className="flex justify-between items-center py-3 bg-destructive/10 rounded-lg px-3 mt-2">
-                  <span className="text-sm font-bold text-destructive">TOTAL A PAGAR</span>
-                  <span className="text-lg font-bold text-destructive">{formatCurrency(calculos.custoTotal + (calculos.impostoUnitario * Math.floor(calculos.fechados)))}</span>
+                <div className="flex justify-between items-center py-4 bg-destructive/15 rounded-xl px-4 mt-3 border-2 border-destructive/30">
+                  <span className="text-sm font-bold text-destructive uppercase">TOTAL A PAGAR</span>
+                  <span className="text-xl font-black text-destructive">{formatCurrency(calculos.custoTotal + (calculos.impostoUnitario * Math.floor(calculos.fechados)))}</span>
                 </div>
               </div>
             </div>
 
             {/* O que você vai receber */}
             <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-success uppercase tracking-wide border-b border-success/30 pb-2">
-                💰 O que você vai receber
+              <h4 className="text-sm font-bold text-success uppercase tracking-wide border-b-2 border-success/40 pb-3 flex items-center gap-2">
+                💰 O QUE VOCÊ VAI RECEBER
               </h4>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Quantidade de vendas previstas</span>
-                  <span className="text-sm font-semibold text-foreground">{Math.floor(calculos.fechados)} vendas</span>
+              <div className="space-y-1">
+                <div className="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-foreground">Quantidade de vendas previstas</span>
+                  <span className="text-base font-bold text-foreground">{Math.floor(calculos.fechados)} vendas</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Valor por venda</span>
-                  <span className="text-sm font-semibold text-foreground">{formatCurrency(valorProduto)}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-foreground">Valor por venda</span>
+                  <span className="text-base font-bold text-foreground">{formatCurrency(valorProduto)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Faturamento total</span>
-                  <span className="text-sm font-semibold text-success">{formatCurrency(calculos.receitaTotal)}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-success/5 rounded-lg border border-success/20">
+                  <span className="text-sm font-medium text-foreground">Faturamento total</span>
+                  <span className="text-base font-bold text-success">{formatCurrency(calculos.receitaTotal)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-border/50">
-                  <span className="text-sm text-muted-foreground">Lucro líquido por venda</span>
-                  <span className="text-sm font-semibold text-foreground">{formatCurrency(calculos.lucroUnitario)}</span>
+                <div className="flex justify-between items-center py-3 px-4 bg-muted/50 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-foreground">Lucro líquido por venda</span>
+                  <span className="text-base font-bold text-foreground">{formatCurrency(calculos.lucroUnitario)}</span>
                 </div>
-                <div className={`flex justify-between items-center py-3 rounded-lg px-3 mt-2 ${calculos.resultadoFinal >= 0 ? 'bg-success/10' : 'bg-destructive/10'}`}>
-                  <span className={`text-sm font-bold ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>LUCRO FINAL</span>
-                  <span className={`text-lg font-bold ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(calculos.resultadoFinal)}</span>
+                <div className={`flex justify-between items-center py-4 rounded-xl px-4 mt-3 border-2 ${calculos.resultadoFinal >= 0 ? 'bg-success/15 border-success/30' : 'bg-destructive/15 border-destructive/30'}`}>
+                  <span className={`text-sm font-bold uppercase ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>LUCRO FINAL</span>
+                  <span className={`text-xl font-black ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(calculos.resultadoFinal)}</span>
                 </div>
               </div>
             </div>
