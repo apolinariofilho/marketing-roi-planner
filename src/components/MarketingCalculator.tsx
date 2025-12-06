@@ -168,7 +168,7 @@ const MarketingCalculator = () => {
 
       <div ref={reportRef} className="max-w-7xl mx-auto px-4 py-6">
         {/* Dashboard Top Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           {/* KPI Cards */}
           <div className="glass-card p-4 border-l-4 border-l-primary">
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">ROI Projetado</p>
@@ -177,7 +177,13 @@ const MarketingCalculator = () => {
             </p>
           </div>
           <div className="glass-card p-4 border-l-4 border-l-chart-2">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Lucro Projetado</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Faturamento Bruto</p>
+            <p className="text-2xl font-bold tabular-nums text-foreground">
+              {formatCurrency(calculos.receitaTotal)}
+            </p>
+          </div>
+          <div className={`glass-card p-4 border-l-4 ${calculos.resultadoFinal >= 0 ? 'border-l-success bg-success/5' : 'border-l-destructive bg-destructive/5'}`}>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">💰 Sobra p/ Empresário</p>
             <p className={`text-2xl font-bold tabular-nums ${calculos.resultadoFinal >= 0 ? 'text-success' : 'text-destructive'}`}>
               {formatCurrency(calculos.resultadoFinal)}
             </p>
