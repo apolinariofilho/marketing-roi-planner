@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Calculator, TrendingUp, Users, DollarSign, Target, Package, Percent, AlertTriangle, CheckCircle, Briefcase, ShoppingCart } from "lucide-react";
-import InputField from "./InputField";
+import SliderField from "./SliderField";
 import ResultCard from "./ResultCard";
 import FunnelStep from "./FunnelStep";
 
@@ -18,13 +18,12 @@ const MarketingCalculator = () => {
   const [custoEquipe, setCustoEquipe] = useState(3000);
   
   // Produto
-  const [nomeProduto, setNomeProduto] = useState("Produto/Serviço");
   const [valorProduto, setValorProduto] = useState(1500);
   const [margemLucro, setMargemLucro] = useState(40);
   
   // Tipo e Imposto
   const [tipoOferta, setTipoOferta] = useState<"servico" | "produto">("servico");
-  const [taxaImposto, setTaxaImposto] = useState(7.5); // Default para serviço
+  const [taxaImposto, setTaxaImposto] = useState(7.5);
 
   // Cálculos
   const calculos = useMemo(() => {
@@ -36,7 +35,6 @@ const MarketingCalculator = () => {
     const investimentoComTaxa = investimento * 1.13;
     const custoTotal = investimentoComTaxa + custoEquipe;
     
-    // Lucro bruto e imposto sobre a margem
     const lucroUnitarioBruto = valorProduto * (margemLucro / 100);
     const impostoUnitario = lucroUnitarioBruto * (taxaImposto / 100);
     const lucroUnitario = lucroUnitarioBruto - impostoUnitario;
@@ -75,287 +73,275 @@ const MarketingCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+    <div className="min-h-screen bg-background py-6 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Header Compacto */}
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-3">
             <Calculator className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Calculadora de Viabilidade</span>
+            <span className="text-xs font-medium text-primary">Calculadora de Viabilidade</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            <span className="gradient-text">Marketing Investment</span>
-            <br />
-            <span className="text-foreground">Calculator</span>
+          <h1 className="text-2xl md:text-3xl font-display font-bold">
+            <span className="gradient-text">Marketing Investment Calculator</span>
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Analise a viabilidade do seu investimento em marketing e descubra quantos produtos precisa vender para atingir o break-even.
-          </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Coluna 1: Investimento e Funil */}
-          <div className="space-y-6">
-            <div className="glass-card p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <DollarSign className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-display font-semibold">Investimento</h2>
+        {/* Layout Principal */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Coluna Esquerda: Inputs */}
+          <div className="space-y-4">
+            {/* Investimento */}
+            <div className="glass-card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <DollarSign className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Investimento</h2>
               </div>
-              
-              <div className="space-y-4">
-                <InputField
-                  label="Valor do Investimento em Anúncios"
+              <div className="space-y-5">
+                <SliderField
+                  label="Anúncios"
                   value={investimento}
                   onChange={setInvestimento}
-                  prefix="R$"
+                  min={500}
+                  max={50000}
+                  step={500}
+                  formatValue={(v) => formatCurrency(v)}
                 />
-                <InputField
-                  label="Custo por Lead"
+                <SliderField
+                  label="Custo/Lead"
                   value={custoLead}
                   onChange={setCustoLead}
-                  prefix="R$"
+                  min={5}
+                  max={200}
+                  step={5}
+                  formatValue={(v) => formatCurrency(v)}
                 />
-                <InputField
-                  label="Custo da Equipe de Marketing"
+                <SliderField
+                  label="Equipe Marketing"
                   value={custoEquipe}
                   onChange={setCustoEquipe}
-                  prefix="R$"
+                  min={0}
+                  max={20000}
+                  step={500}
+                  formatValue={(v) => formatCurrency(v)}
                 />
               </div>
             </div>
 
-            <div className="glass-card p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Percent className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-display font-semibold">Taxas de Conversão</h2>
+            {/* Conversão */}
+            <div className="glass-card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Percent className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Taxas de Conversão</h2>
               </div>
-              
-              <div className="space-y-4">
-                <InputField
-                  label="Taxa de Agendamento"
+              <div className="space-y-5">
+                <SliderField
+                  label="Agendamento"
                   value={taxaAgendamento}
                   onChange={setTaxaAgendamento}
-                  suffix="%"
+                  min={5}
                   max={100}
+                  suffix="%"
                 />
-                <InputField
-                  label="Taxa de Comparecimento"
+                <SliderField
+                  label="Comparecimento"
                   value={taxaComparecimento}
                   onChange={setTaxaComparecimento}
-                  suffix="%"
+                  min={10}
                   max={100}
+                  suffix="%"
                 />
-                <InputField
-                  label="Taxa de Fechamento"
+                <SliderField
+                  label="Fechamento"
                   value={taxaFechamento}
                   onChange={setTaxaFechamento}
-                  suffix="%"
+                  min={5}
                   max={100}
+                  suffix="%"
                 />
               </div>
             </div>
-          </div>
 
-          {/* Coluna 2: Funil de Vendas */}
-          <div className="glass-card p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Users className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-display font-semibold">Funil de Vendas</h2>
-            </div>
-            
-            <div className="space-y-2">
-              <FunnelStep label="Leads Gerados" value={calculos.leads} />
-              <FunnelStep 
-                label="Agendaram" 
-                value={calculos.agendados} 
-                percentage={taxaAgendamento}
-              />
-              <FunnelStep 
-                label="Compareceram" 
-                value={calculos.comparecidos} 
-                percentage={taxaComparecimento}
-              />
-              <FunnelStep 
-                label="Fecharam" 
-                value={calculos.fechados} 
-                percentage={taxaFechamento}
-                isLast
-              />
-            </div>
-          </div>
-
-          {/* Coluna 3: Produto e Resultados */}
-          <div className="space-y-6">
-            <div className="glass-card p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Package className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-display font-semibold">Produto/Serviço</h2>
+            {/* Produto */}
+            <div className="glass-card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Package className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Produto/Serviço</h2>
               </div>
               
-              <div className="space-y-4">
-                {/* Tipo de Oferta */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground">Tipo de Oferta</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => {
-                        setTipoOferta("servico");
-                        setTaxaImposto(7.5);
-                      }}
-                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200 ${
-                        tipoOferta === "servico"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-secondary/50 border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <Briefcase className="w-4 h-4" />
-                      <span className="font-medium text-sm">Serviço</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTipoOferta("produto");
-                        setTaxaImposto(22.5);
-                      }}
-                      className={`flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200 ${
-                        tipoOferta === "produto"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-secondary/50 border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      <span className="font-medium text-sm">Produto</span>
-                    </button>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {tipoOferta === "servico" 
-                      ? "Serviços: imposto entre 6% e 9%" 
-                      : "Produtos: imposto entre 20% e 25%"}
-                  </p>
-                </div>
-                
-                {/* Taxa de Imposto */}
-                <InputField
-                  label="Taxa de Imposto"
+              {/* Tipo de Oferta */}
+              <div className="grid grid-cols-2 gap-2 mb-5">
+                <button
+                  onClick={() => {
+                    setTipoOferta("servico");
+                    setTaxaImposto(7.5);
+                  }}
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border transition-all duration-200 text-xs font-medium ${
+                    tipoOferta === "servico"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-secondary/50 border-border hover:border-primary/50"
+                  }`}
+                >
+                  <Briefcase className="w-3.5 h-3.5" />
+                  Serviço (6-9%)
+                </button>
+                <button
+                  onClick={() => {
+                    setTipoOferta("produto");
+                    setTaxaImposto(22.5);
+                  }}
+                  className={`flex items-center justify-center gap-2 py-2.5 rounded-lg border transition-all duration-200 text-xs font-medium ${
+                    tipoOferta === "produto"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-secondary/50 border-border hover:border-primary/50"
+                  }`}
+                >
+                  <ShoppingCart className="w-3.5 h-3.5" />
+                  Produto (20-25%)
+                </button>
+              </div>
+
+              <div className="space-y-5">
+                <SliderField
+                  label="Imposto"
                   value={taxaImposto}
                   onChange={setTaxaImposto}
+                  min={tipoOferta === "servico" ? 6 : 20}
+                  max={tipoOferta === "servico" ? 9 : 25}
+                  step={0.5}
                   suffix="%"
-                  max={100}
                 />
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground">Nome do Produto</label>
-                  <input
-                    type="text"
-                    value={nomeProduto}
-                    onChange={(e) => setNomeProduto(e.target.value)}
-                    className="flex h-12 w-full rounded-lg border border-border bg-secondary/50 px-4 py-2 text-base text-foreground transition-all duration-200 placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-primary/50"
-                  />
-                </div>
-                <InputField
-                  label="Valor do Produto"
+                <SliderField
+                  label="Valor"
                   value={valorProduto}
                   onChange={setValorProduto}
-                  prefix="R$"
+                  min={100}
+                  max={50000}
+                  step={100}
+                  formatValue={(v) => formatCurrency(v)}
                 />
-                <InputField
+                <SliderField
                   label="Margem de Lucro"
                   value={margemLucro}
                   onChange={setMargemLucro}
+                  min={10}
+                  max={90}
                   suffix="%"
-                  max={100}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna Direita: Resultados */}
+          <div className="space-y-4">
+            {/* Funil Compacto */}
+            <div className="glass-card p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Users className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Funil de Vendas</h2>
+              </div>
+              <div className="space-y-1.5">
+                <FunnelStep label="Leads" value={calculos.leads} />
+                <FunnelStep label="Agendaram" value={calculos.agendados} percentage={taxaAgendamento} />
+                <FunnelStep label="Compareceram" value={calculos.comparecidos} percentage={taxaComparecimento} />
+                <FunnelStep label="Fecharam" value={calculos.fechados} percentage={taxaFechamento} isLast />
+              </div>
+            </div>
+
+            {/* Custos */}
+            <div className="glass-card p-5 border-primary/20">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Custos</h2>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <ResultCard
+                  label="Anúncios +13%"
+                  value={formatCurrency(calculos.investimentoComTaxa)}
+                  icon={<DollarSign className="w-4 h-4" />}
+                />
+                <ResultCard
+                  label="Custo Total"
+                  value={formatCurrency(calculos.custoTotal)}
+                  icon={<DollarSign className="w-4 h-4" />}
+                  variant="warning"
                 />
               </div>
             </div>
 
-            <div className="glass-card p-6 border-primary/30 bg-gradient-to-b from-primary/5 to-transparent">
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                <h2 className="text-lg font-display font-semibold">Custos Totais</h2>
+            {/* Análise Break-Even */}
+            <div className="glass-card p-5 border-primary/30 bg-gradient-to-b from-primary/5 to-transparent">
+              <div className="flex items-center gap-2 mb-4">
+                <Target className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-display font-semibold uppercase tracking-wide">Break-Even</h2>
               </div>
               
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 mb-4">
                 <ResultCard
-                  label="Investimento + 13% de taxa"
-                  value={formatCurrency(calculos.investimentoComTaxa)}
-                  icon={<DollarSign className="w-5 h-5" />}
+                  label={`Imposto (${taxaImposto}%)`}
+                  value={formatCurrency(calculos.impostoUnitario)}
+                  icon={<Percent className="w-4 h-4" />}
+                  variant="warning"
                 />
                 <ResultCard
-                  label="Custo Total (Anúncios + Equipe)"
-                  value={formatCurrency(calculos.custoTotal)}
-                  icon={<DollarSign className="w-5 h-5" />}
-                  variant="warning"
-                  size="large"
+                  label="Lucro Líquido/Un."
+                  value={formatCurrency(calculos.lucroUnitario)}
+                  icon={<Package className="w-4 h-4" />}
+                />
+                <ResultCard
+                  label="Para Break-Even"
+                  value={`${calculos.produtosBreakEven} un.`}
+                  icon={<Target className="w-4 h-4" />}
+                  variant={calculos.produtosBreakEven <= calculos.fechados ? "success" : "warning"}
+                  highlight
+                />
+                <ResultCard
+                  label="Vendas Previstas"
+                  value={`${Math.floor(calculos.fechados)} un.`}
+                  icon={<Users className="w-4 h-4" />}
                 />
               </div>
+
+              {/* ROI Grande */}
+              <div className={`p-4 rounded-xl border ${calculos.roi >= 0 ? 'bg-success/10 border-success/30' : 'bg-destructive/10 border-destructive/30'}`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {calculos.roi >= 0 ? (
+                      <CheckCircle className="w-5 h-5 text-success" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-destructive" />
+                    )}
+                    <span className="text-sm font-medium text-muted-foreground">ROI Projetado</span>
+                  </div>
+                  <span className={`text-2xl font-bold ${calculos.roi >= 0 ? 'text-success' : 'text-destructive'}`}>
+                    {calculos.roi.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Resultados Finais */}
-        <div className="mt-8 glass-card p-8 glow-primary animate-fade-in border-primary/30">
-          <div className="flex items-center gap-2 mb-6">
-            <Target className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-display font-bold">Análise de Break-Even</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-5 gap-4">
-            <ResultCard
-              label={`Imposto (${taxaImposto}%)`}
-              value={formatCurrency(calculos.impostoUnitario)}
-              icon={<Percent className="w-5 h-5" />}
-              variant="warning"
-              size="large"
-            />
-            <ResultCard
-              label="Lucro Líquido/Unidade"
-              value={formatCurrency(calculos.lucroUnitario)}
-              icon={<Package className="w-5 h-5" />}
-              size="large"
-            />
-            <ResultCard
-              label="Produtos para Break-Even"
-              value={calculos.produtosBreakEven}
-              icon={<Target className="w-5 h-5" />}
-              variant={calculos.produtosBreakEven <= calculos.fechados ? "success" : "warning"}
-              highlight
-              size="large"
-            />
-            <ResultCard
-              label="Clientes Fechados Previstos"
-              value={Math.floor(calculos.fechados)}
-              icon={<Users className="w-5 h-5" />}
-              size="large"
-            />
-            <ResultCard
-              label="ROI Projetado"
-              value={`${calculos.roi.toFixed(1)}%`}
-              icon={calculos.roi >= 0 ? <CheckCircle className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
-              variant={calculos.roi >= 0 ? "success" : "destructive"}
-              size="large"
-            />
-          </div>
-
-          <div className="mt-8 p-6 rounded-xl bg-secondary/50 border border-border">
-            <div className="flex items-start gap-4">
-              {calculos.resultadoFinal >= 0 ? (
-                <div className="p-3 rounded-xl bg-success/20">
-                  <CheckCircle className="w-6 h-6 text-success" />
+            {/* Resultado Final */}
+            <div className={`glass-card p-5 ${calculos.resultadoFinal >= 0 ? 'border-success/30' : 'border-destructive/30'}`}>
+              <div className="flex items-center gap-3">
+                {calculos.resultadoFinal >= 0 ? (
+                  <div className="p-2.5 rounded-lg bg-success/20">
+                    <CheckCircle className="w-5 h-5 text-success" />
+                  </div>
+                ) : (
+                  <div className="p-2.5 rounded-lg bg-destructive/20">
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-foreground">
+                    {calculos.resultadoFinal >= 0 ? "Investimento Viável!" : "Atenção!"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {calculos.resultadoFinal >= 0 
+                      ? <>Lucro projetado: <span className="font-bold text-success">{formatCurrency(calculos.resultadoFinal)}</span></>
+                      : <>Faltam <span className="font-bold text-warning">{calculos.produtosBreakEven - Math.floor(calculos.fechados)}</span> vendas para break-even</>
+                    }
+                  </p>
                 </div>
-              ) : (
-                <div className="p-3 rounded-xl bg-destructive/20">
-                  <AlertTriangle className="w-6 h-6 text-destructive" />
-                </div>
-              )}
-              <div className="flex-1">
-                <p className="text-lg font-display font-bold text-foreground mb-2">
-                  {calculos.resultadoFinal >= 0 ? "Investimento Viável!" : "Atenção: Investimento pode não ser viável"}
-                </p>
-                <p className="text-base text-muted-foreground leading-relaxed">
-                  {calculos.resultadoFinal >= 0 
-                    ? <>Com <span className="font-bold text-foreground">{Math.floor(calculos.fechados)} vendas</span> previstas, você terá um lucro de <span className="font-bold text-success">{formatCurrency(calculos.resultadoFinal)}</span> após cobrir todos os custos.</>
-                    : <>Você precisaria de <span className="font-bold text-warning">{calculos.produtosBreakEven} vendas</span> para break-even, mas a previsão é de apenas <span className="font-bold text-foreground">{Math.floor(calculos.fechados)} vendas</span>. Considere ajustar suas taxas de conversão ou custos.</>
-                  }
-                </p>
               </div>
             </div>
           </div>
