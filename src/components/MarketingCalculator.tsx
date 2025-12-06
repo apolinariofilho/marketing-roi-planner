@@ -207,23 +207,24 @@ const MarketingCalculator = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 border-primary/20">
+            <div className="glass-card p-6 border-primary/30 bg-gradient-to-b from-primary/5 to-transparent">
               <div className="flex items-center gap-2 mb-6">
                 <TrendingUp className="w-5 h-5 text-primary" />
                 <h2 className="text-lg font-display font-semibold">Custos Totais</h2>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <ResultCard
                   label="Investimento + 13% de taxa"
                   value={formatCurrency(calculos.investimentoComTaxa)}
-                  icon={<DollarSign className="w-4 h-4" />}
+                  icon={<DollarSign className="w-5 h-5" />}
                 />
                 <ResultCard
                   label="Custo Total (Anúncios + Equipe)"
                   value={formatCurrency(calculos.custoTotal)}
-                  icon={<DollarSign className="w-4 h-4" />}
+                  icon={<DollarSign className="w-5 h-5" />}
                   variant="warning"
+                  size="large"
                 />
               </div>
             </div>
@@ -231,7 +232,7 @@ const MarketingCalculator = () => {
         </div>
 
         {/* Resultados Finais */}
-        <div className="mt-8 glass-card p-8 glow-primary animate-fade-in">
+        <div className="mt-8 glass-card p-8 glow-primary animate-fade-in border-primary/30">
           <div className="flex items-center gap-2 mb-6">
             <Target className="w-6 h-6 text-primary" />
             <h2 className="text-xl font-display font-bold">Análise de Break-Even</h2>
@@ -241,43 +242,51 @@ const MarketingCalculator = () => {
             <ResultCard
               label="Lucro por Produto"
               value={formatCurrency(calculos.lucroUnitario)}
-              icon={<Package className="w-4 h-4" />}
+              icon={<Package className="w-5 h-5" />}
+              size="large"
             />
             <ResultCard
               label="Produtos para Break-Even"
               value={calculos.produtosBreakEven}
-              icon={<Target className="w-4 h-4" />}
+              icon={<Target className="w-5 h-5" />}
               variant={calculos.produtosBreakEven <= calculos.fechados ? "success" : "warning"}
               highlight
+              size="large"
             />
             <ResultCard
               label="Clientes Fechados Previstos"
               value={Math.floor(calculos.fechados)}
-              icon={<Users className="w-4 h-4" />}
+              icon={<Users className="w-5 h-5" />}
+              size="large"
             />
             <ResultCard
               label="ROI Projetado"
               value={`${calculos.roi.toFixed(1)}%`}
-              icon={calculos.roi >= 0 ? <CheckCircle className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+              icon={calculos.roi >= 0 ? <CheckCircle className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
               variant={calculos.roi >= 0 ? "success" : "destructive"}
+              size="large"
             />
           </div>
 
-          <div className="mt-6 p-4 rounded-lg bg-secondary/50 border border-border">
-            <div className="flex items-start gap-3">
+          <div className="mt-8 p-6 rounded-xl bg-secondary/50 border border-border">
+            <div className="flex items-start gap-4">
               {calculos.resultadoFinal >= 0 ? (
-                <CheckCircle className="w-5 h-5 text-success mt-0.5" />
+                <div className="p-3 rounded-xl bg-success/20">
+                  <CheckCircle className="w-6 h-6 text-success" />
+                </div>
               ) : (
-                <AlertTriangle className="w-5 h-5 text-destructive mt-0.5" />
+                <div className="p-3 rounded-xl bg-destructive/20">
+                  <AlertTriangle className="w-6 h-6 text-destructive" />
+                </div>
               )}
-              <div>
-                <p className="font-medium text-foreground">
+              <div className="flex-1">
+                <p className="text-lg font-display font-bold text-foreground mb-2">
                   {calculos.resultadoFinal >= 0 ? "Investimento Viável!" : "Atenção: Investimento pode não ser viável"}
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   {calculos.resultadoFinal >= 0 
-                    ? `Com ${Math.floor(calculos.fechados)} vendas previstas, você terá um lucro de ${formatCurrency(calculos.resultadoFinal)} após cobrir todos os custos.`
-                    : `Você precisaria de ${calculos.produtosBreakEven} vendas para break-even, mas a previsão é de apenas ${Math.floor(calculos.fechados)} vendas. Considere ajustar suas taxas de conversão ou custos.`
+                    ? <>Com <span className="font-bold text-foreground">{Math.floor(calculos.fechados)} vendas</span> previstas, você terá um lucro de <span className="font-bold text-success">{formatCurrency(calculos.resultadoFinal)}</span> após cobrir todos os custos.</>
+                    : <>Você precisaria de <span className="font-bold text-warning">{calculos.produtosBreakEven} vendas</span> para break-even, mas a previsão é de apenas <span className="font-bold text-foreground">{Math.floor(calculos.fechados)} vendas</span>. Considere ajustar suas taxas de conversão ou custos.</>
                   }
                 </p>
               </div>

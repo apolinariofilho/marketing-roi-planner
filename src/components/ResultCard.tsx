@@ -6,14 +6,15 @@ interface ResultCardProps {
   icon?: ReactNode;
   highlight?: boolean;
   variant?: "default" | "success" | "warning" | "destructive";
+  size?: "default" | "large";
 }
 
-const ResultCard = ({ label, value, icon, highlight, variant = "default" }: ResultCardProps) => {
+const ResultCard = ({ label, value, icon, highlight, variant = "default", size = "default" }: ResultCardProps) => {
   const variantStyles = {
-    default: "border-border",
-    success: "border-success/30 bg-success/5",
-    warning: "border-warning/30 bg-warning/5",
-    destructive: "border-destructive/30 bg-destructive/5",
+    default: "border-border bg-card",
+    success: "border-success/40 bg-success/10",
+    warning: "border-warning/40 bg-warning/10",
+    destructive: "border-destructive/40 bg-destructive/10",
   };
 
   const valueStyles = {
@@ -23,21 +24,28 @@ const ResultCard = ({ label, value, icon, highlight, variant = "default" }: Resu
     destructive: "text-destructive",
   };
 
+  const iconBg = {
+    default: "bg-secondary",
+    success: "bg-success/20",
+    warning: "bg-warning/20",
+    destructive: "bg-destructive/20",
+  };
+
   return (
     <div
-      className={`glass-card p-4 animate-fade-in transition-all duration-300 hover:scale-[1.02] ${
+      className={`glass-card p-5 animate-fade-in transition-all duration-300 hover:scale-[1.02] ${
         variantStyles[variant]
-      } ${highlight ? "glow-primary" : ""}`}
+      } ${highlight ? "glow-primary border-primary/40" : ""}`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         {icon && (
-          <div className={`p-2 rounded-lg bg-secondary ${valueStyles[variant]}`}>
+          <div className={`p-3 rounded-xl ${iconBg[variant]} ${valueStyles[variant]}`}>
             {icon}
           </div>
         )}
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground">{label}</p>
-          <p className={`text-xl font-display font-semibold ${valueStyles[variant]}`}>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-1">{label}</p>
+          <p className={`${size === "large" ? "text-3xl" : "text-2xl"} font-display font-bold tabular-nums ${valueStyles[variant]}`}>
             {value}
           </p>
         </div>
