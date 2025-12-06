@@ -36,10 +36,10 @@ const MarketingCalculator = () => {
     const investimentoComTaxa = investimento * 1.13;
     const custoTotal = investimentoComTaxa + custoEquipe;
     
-    // Lucro unitário agora desconta o imposto
-    const valorAposImposto = valorProduto * (1 - taxaImposto / 100);
-    const lucroUnitario = valorAposImposto * (margemLucro / 100);
-    const impostoUnitario = valorProduto * (taxaImposto / 100);
+    // Lucro bruto e imposto sobre a margem
+    const lucroUnitarioBruto = valorProduto * (margemLucro / 100);
+    const impostoUnitario = lucroUnitarioBruto * (taxaImposto / 100);
+    const lucroUnitario = lucroUnitarioBruto - impostoUnitario;
     
     const produtosBreakEven = lucroUnitario > 0 ? Math.ceil(custoTotal / lucroUnitario) : 0;
     
